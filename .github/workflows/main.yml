@@ -1,0 +1,27 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Generate build number
+      uses: einaregilsson/build-number@v1 
+      with:
+        token: ${{secrets.github_token}}
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag sonicgd/github-runner-dotnet-nodejs-docker:ci-$BUILD_NUMBER
+    - name: Tag as latest
+      if: github.ref == 'refs/heads/master'
+      run: docker tag sonicgd/github-runner-dotnet-nodejs-docker:ci-$BUILD_NUMBER sonicgd/github-runner-dotnet-nodejs-docker:latest
+    - name: Docker login
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+    - name: Docker push tag
+      run: docker push sonicgd/github-runner-dotnet-nodejs-docker:ci-$BUILD_NUMBER
+    - name: Docker push latest
+      if: github.ref == 'refs/heads/master'
+      run: docker push sonicgd/github-runner-dotnet-nodejs-docker:latest
