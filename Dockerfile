@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.0
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1
 
 RUN curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add -
 
@@ -10,7 +10,7 @@ RUN apt-get update \
     && apt-get -y install docker-ce-cli nodejs \
     && apt purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false software-properties-common
 
-ENV GITHUB_RUNNER_VERSION 2.161.0
+ENV GITHUB_RUNNER_VERSION 2.163.1
 
 RUN mkdir actions-runner && cd actions-runner \
     && curl -O https://githubassets.azureedge.net/runners/${GITHUB_RUNNER_VERSION}/actions-runner-linux-x64-${GITHUB_RUNNER_VERSION}.tar.gz \
